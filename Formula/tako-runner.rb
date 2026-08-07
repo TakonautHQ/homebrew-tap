@@ -1,0 +1,37 @@
+# typed: strict
+# frozen_string_literal: true
+
+# Homebrew formula for the customer-managed Takonaut Project Agent Runner.
+class TakoRunner < Formula
+  desc "Customer-managed Takonaut Project Agent Runner powered by Pi"
+  homepage "https://github.com/TakonautHQ/tako-runner"
+  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.1.0/tako-runner-0.1.0.tgz"
+  sha256 "25549df29e9cf6ebf1046ac4ca092b831baf4e95f482481d25d872b927c9521f"
+  license "Apache-2.0"
+
+  depends_on "bun"
+  depends_on "git"
+
+  def install
+    system "bun", "install", "--production", "--frozen-lockfile"
+    libexec.install Dir["*"]
+
+    (bin/"tako-runner").write <<~SH
+      #!/bin/bash
+      exec "#{formula_opt_bin("bun")}/bun" "#{libexec}/src/runner-cli.ts" "$@"
+    SH
+    chmod 0755, bin/"tako-runner"
+    bin.install_symlink "tako-runner" => "takonaut-runner"
+  end
+
+  service do
+    run [opt_bin/"tako-runner", "start"]
+    keep_alive true
+    log_path var/"log/tako-runner.log"
+    error_log_path var/"log/tako-runner.log"
+  end
+
+  test do
+    assert_match "Usage:", shell_output("#{bin}/tako-runner 2>&1", 2)
+  end
+end
