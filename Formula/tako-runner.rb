@@ -5,8 +5,8 @@
 class TakoRunner < Formula
   desc "Customer-managed Takonaut Project Agent Runner powered by Pi"
   homepage "https://github.com/TakonautHQ/tako-runner"
-  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.1.0/tako-runner-0.1.0.tgz"
-  sha256 "25549df29e9cf6ebf1046ac4ca092b831baf4e95f482481d25d872b927c9521f"
+  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.2.0/tako-runner-0.2.0.tgz"
+  sha256 "633da0a1beaf3bc2e6e770192475da01c415da6bf8c3119461994076d054f1bb"
   license "Apache-2.0"
 
   depends_on "bun"
@@ -14,6 +14,16 @@ class TakoRunner < Formula
 
   def install
     system "bun", "install", "--production", "--frozen-lockfile"
+
+    native_root = "node_modules/@earendil-works/pi-tui/native"
+    rm_r "#{native_root}/win32"
+    if OS.mac?
+      incompatible_arch = Hardware::CPU.arm? ? "darwin-x64" : "darwin-arm64"
+      rm_r "#{native_root}/darwin/prebuilds/#{incompatible_arch}"
+    else
+      rm_r "#{native_root}/darwin"
+    end
+
     libexec.install Dir["*"]
 
     (bin/"tako-runner").write <<~SH
