@@ -5,8 +5,8 @@
 class TakoRunner < Formula
   desc "Customer-managed Takonaut Project Agent Runner powered by Pi"
   homepage "https://github.com/TakonautHQ/tako-runner"
-  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.2.2/tako-runner-0.2.2.tgz"
-  sha256 "d6d0f7e55efb958e8d5f550d47ec27e506ff7758b8a3d86e47ce0c42c661e64f"
+  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.2.3/tako-runner-0.2.3.tgz"
+  sha256 "cde732df4f2a04a6cb95418d88475095dac4f3f0cd1f336cf0a26e8cd91910d0"
   license "Apache-2.0"
 
   depends_on "bun"
@@ -34,6 +34,19 @@ class TakoRunner < Formula
     bin.install_symlink "tako-runner" => "takonaut-runner"
   end
 
+  def caveats
+    <<~EOS
+      If setup did not start the service, start it with:
+        brew services start tako-runner
+
+      After upgrading an existing installation, restart the running service so
+      it loads the newly installed version:
+        brew services restart tako-runner
+
+      If you use another service manager, restart that managed Runner instead.
+    EOS
+  end
+
   service do
     run [opt_bin/"tako-runner", "start"]
     keep_alive true
@@ -42,6 +55,6 @@ class TakoRunner < Formula
   end
 
   test do
-    assert_match "Usage:", shell_output("#{bin}/tako-runner 2>&1", 2)
+    assert_equal "tako-runner #{version}", shell_output("#{bin}/tako-runner --version").strip
   end
 end
