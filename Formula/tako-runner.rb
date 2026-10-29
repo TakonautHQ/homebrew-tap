@@ -5,8 +5,8 @@
 class TakoRunner < Formula
   desc "Customer-managed Takonaut Project Agent Runner powered by Pi"
   homepage "https://github.com/TakonautHQ/tako-runner"
-  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.10.0/tako-runner-0.10.0.tgz"
-  sha256 "d2256f1a9bc95518e5006acae69a89216168aa83614cc44a40beff475f1ece0a"
+  url "https://github.com/TakonautHQ/tako-runner/releases/download/v0.11.0/tako-runner-0.11.0.tgz"
+  sha256 "ce1f907800c5e7f9a5816522fd179a6ef35ecf254628a8867f6a8f743169c7e3"
   license "Apache-2.0"
 
   depends_on "bun"
